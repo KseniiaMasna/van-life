@@ -16,6 +16,8 @@ import VanPricing from './pages/Host/HostedVan/VanPricing'
 import VanInfo from './pages/Host/HostedVan/VanInfo'
 import VanPhotos from './pages/Host/HostedVan/VanPhotos'
 import NotFound from './pages/NotFound'
+import AuthRequired from './components/AuthRequired'
+import Login from './pages/Login'
 
 
 function App() {
@@ -26,19 +28,28 @@ function App() {
           <Route path='/' element={<Layout />}>
             <Route index  element={<Home />}/>
             <Route path='about' element={<About />}/>
+            <Route path='login' element={<Login />}/>
             <Route path='vans' element={<Vans />}/>
             <Route path='vans/:id' element={<VanDetail />}/>
-            <Route path='host' element={<HostLayout />}> 
-              <Route index element={<Dashboard />}/>
-              <Route path='income' element={<Income />}/>
-              <Route path='reviews' element={<Reviews />}/>
-              <Route path='vans' element={<HostedVans />}/>
-              <Route path='vans/:id' element={<HostedVan />}>
-                <Route index element={<VanInfo />}/>
-                <Route path='pricing' element={<VanPricing />}/>
-                <Route path='photos' element={<VanPhotos />}/>
-              </Route>              
-            </Route> 
+
+
+            <Route element={<AuthRequired />}>
+
+              <Route path='host' element={<HostLayout />}> 
+                <Route index element={<Dashboard />}/>
+                <Route path='income' element={<Income />}/>
+                <Route path='reviews' element={<Reviews />}/>
+                <Route path='vans' element={<HostedVans />}/>
+                <Route path='vans/:id' element={<HostedVan />}>
+                  <Route index element={<VanInfo />}/>
+                  <Route path='pricing' element={<VanPricing />}/>
+                  <Route path='photos' element={<VanPhotos />}/>
+                </Route>              
+              </Route> 
+
+            </Route>
+
+
             <Route path='*' element={<NotFound />}/>                           
           </Route>
         </Routes>
