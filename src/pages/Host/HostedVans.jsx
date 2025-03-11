@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { getHostVans } from "../../api"
 
 const HostedVans = () => {
     const [hostedVans, setHostedVans] = useState([])
+    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
+
     useEffect(() => {
-        fetch("/api/host/vans")
-            .then(res => res.json())
-            .then(data => setHostedVans(data.vans))
+        async function loadHostVans() {
+            setLoading(true)
+            try{
+                const data = await getHostVans()
+                setHostedVans(data)
+            } catch(err){
+                setError(err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadHostVans()
     }, [])
 
     const hostedVansElements = hostedVans.map(van => {        
@@ -25,22 +38,26 @@ const HostedVans = () => {
                 </div>
             </Link>
         )
-    })    
+    }) 
+    
+    if(loading){
+        return <h2>Loading...</h2>
+    }
+
+    if (error) {
+        return <h1>There was an error: {error.message}</h1>
+    }
 
     return (
         <section>
             <h1 className="host-vans-title">Your listed vans</h1>
             <div className="host-vans-list">
                 {
-                    hostedVans.length > 0 ? (
+                    hostedVans.length > 0 && (
                         <section>
                             {hostedVansElements}
                         </section>
-
-                    ) : (
-                            <h2>Loading...</h2>
-                        )
-                }
+                )}
             </div>
         </section>
     )

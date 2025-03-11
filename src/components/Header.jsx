@@ -1,6 +1,10 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 
 const Header = () => {
+
+    function fakeLogOut() {
+        localStorage.removeItem("loggedin")
+    }
 
     return(
         <header>
@@ -15,6 +19,13 @@ const Header = () => {
                 <NavLink
                     className={({isActive}) => isActive ? 'active-link' : ''} 
                     to="/host">Host</NavLink>
+                <Link to="login" className="login-link">
+                    <img
+                        src="src/assets/User circle.png"
+                        className="login-icon"
+                    />
+                </Link>
+                <button onClick={fakeLogOut}>X</button>
             </nav>
         </header>
     )

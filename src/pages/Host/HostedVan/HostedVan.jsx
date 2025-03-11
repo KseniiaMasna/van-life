@@ -1,15 +1,35 @@
 import { useParams, NavLink, Link, Outlet } from "react-router-dom"
 import { useEffect , useState} from "react"
+import { getVan } from "../../../api"
 
 const HostedVan = () => {
     const {id} = useParams()
     const [hostedVan, setHostedVan] = useState(null)
+    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(()=> {
-        fetch(`/api/host/vans/${id}`)
-            .then(res => res.json())
-            .then(data => setHostedVan(data.vans[0]))
+        async function loadHostVan() {
+            setLoading(true)
+            try{
+                const data = await getVan(id)
+                setHostedVan(data)
+            } catch(err) {
+                setError(err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadHostVan()
     }, [id])
+
+    if(loading){
+        return <h2>Loading...</h2>
+    }
+
+    if (error) {
+        return <h1>There was an error: {error.message}</h1>
+    }
 
     return (
         hostedVan 

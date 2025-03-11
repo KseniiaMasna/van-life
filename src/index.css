@@ -58,6 +58,21 @@ header a:hover {
     text-decoration: underline;
 }
 
+header nav {
+    display: flex;
+    align-items: center;    
+}
+
+header .login-icon {
+    height: 24px;
+    width: 24px;
+}
+
+header .login-link {
+    display: inline-flex;
+    align-items: center;
+}
+
 .active-link{
     color: #161616;
 }
