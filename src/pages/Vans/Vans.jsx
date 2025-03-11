@@ -5,27 +5,38 @@ import { getVans } from "../../api"
 const Vans = () => {
     const [vans, setVans] = useState([])
     const [searchParams, setSearchParams] = useSearchParams()
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {        
         async function loadVans() {
-            const data = await getVans()
-            setVans(data)
+            setLoading(true)
+            try {
+                const data = await getVans()
+                setVans(data)
+            } catch (err) {
+                setError(true) 
+            } finally {
+                setLoading(false)
+            }
         }
         loadVans()
     }, [])
-
-    const filter = searchParams.get('type')
-    const filteredVans = filter 
-        ? vans.filter(van => van.type.toLowerCase() === filter.toLowerCase())
-        : vans        
     
 
+    
+    const filter = searchParams.get('type')
+    
+    const filteredVans = filter 
+    ? vans.filter(van => van.type.toLowerCase() === filter.toLowerCase())
+    : vans || [] // Ensure filteredVans is always an array
+    
     const vanElements = filteredVans.map(van => {
         return (
             <div key={van.id} className="van-tile">
                 <Link to={van.id} 
                     state={{search: searchParams.toString(), 
-                    type: filter
+                        type: filter
                     }}>
                     <img src={van.imageUrl} />
                     <div className="van-info">
@@ -35,9 +46,9 @@ const Vans = () => {
                     <i className={`van-type ${van.type} selected`}>{van.type}</i>
                 </Link>
             </div>
-        )
-    })
-
+        ) 
+    }) 
+    
     const handleFilter = (key, value) => {
         setSearchParams(prevParam => {
             if(value === null){
@@ -49,8 +60,14 @@ const Vans = () => {
         })
     }
 
-    
+    if (loading) {
+        return <h1>Loading..</h1>
+    } 
 
+    if (error) {        
+        return <h1>There was an error</h1>
+    }
+    
     return (
         <div className="van-list-container">
             <h1>Explore our van options</h1>
